@@ -28,7 +28,7 @@ public class AgentService {
         """);
 
         return this.chatClient.prompt(pt.create())
-                //.tools(stockTools, walletTools)
+                .tools(stockTools, walletTools)
                 .call()
                 .content();
     }
