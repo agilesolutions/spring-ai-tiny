@@ -1,0 +1,46 @@
+server:
+  port: 80
+
+spring:
+  jpa:
+    defer-datasource-initialization: true
+    database-platform: org.hibernate.dialect.H2Dialect
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create-drop
+  datasource:
+    url: jdbc:h2:mem:mydb
+    username: sa
+    password: password
+    driverClassName: org.h2.Driver
+
+  ai:
+    ollama:
+      chat:
+        options:
+          model: gemma3:1b
+      base-url: fe6a-34-148-214-45.ngrok-free.app
+
+logging:
+  level:
+    root: INFO
+    com.agilesolutions.chatbot: DEBUG
+    org.springframework.ai: DEBUG
+
+twilio:
+  account:
+    sid: <YOUR_ACCOUNT_SID>
+  auth:
+    token: <YOUR_AUTH_TOKEN>
+  whatsapp:
+    number: whatsapp:+04<MY-SWISS-NUMBER>
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,metrics,prometheus
+  metrics:
+    export:
+      prometheus:
+        enabled: true
