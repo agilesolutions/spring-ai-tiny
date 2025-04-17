@@ -24,7 +24,7 @@ public class AgentService {
 
     public String calculateWalletValueWithTools() {
         PromptTemplate pt = new PromptTemplate("""
-        What’s the current value in dollars of my wallet based on the latest stock daily prices ? Send your response over WhatsUp
+        What’s the current value in dollars of my wallet based on the latest stock daily prices for company APPL ? Send your response over WhatsUp
         """);
 
         return this.chatClient.prompt(pt.create())
