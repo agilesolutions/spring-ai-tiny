@@ -45,7 +45,7 @@ ngrok_tunnel = setup_ngrok_tunnel(NGROK_PORT)
 ```
 **Step 5:** finally run your ollama model
 ```
-!ollama run llama3.3
+!ollama run dwightfoster03/functionary-small-v3.1
 ```
 **Step 6:** run this springboot app and hit one of the REST API endpionts
 ```
