@@ -1,0 +1,33 @@
+# Download and install ollama to the system
+!curl -fsSL https://ollama.com/install.sh | sh
+
+# Install the Ollama Python SDK and pyngrok, the Python library that allows us to create secure tunnels
+!pip install pyngrok ollama
+
+# Start ollama server in sub process
+import subprocess
+def start_ollama_server() -> None:
+    """Starts the Ollama server."""
+    subprocess.Popen(['ollama', 'serve'])
+    print("Ollama server started.")
+
+start_ollama_server()
+
+# Run this function to setting up the ngrok Tunnel, opening the secure door to your colab server.
+from pyngrok import ngrok
+from google.colab import userdata
+def setup_ngrok_tunnel(port: str) -> ngrok.NgrokTunnel:
+    ngrok_auth_token = userdata.get('NGROK_AUTHTOKEN')
+    if not ngrok_auth_token:
+        raise RuntimeError("NGROK_AUTHTOKEN is not set.")
+
+    ngrok.set_auth_token(ngrok_auth_token)
+    tunnel = ngrok.connect(port, host_header=f'localhost:{port}')
+    print(f"ngrok tunnel created: {tunnel.public_url}")
+    return tunnel
+
+NGROK_PORT = '11434'
+ngrok_tunnel = setup_ngrok_tunnel(NGROK_PORT)
+
+# run SLM model
+!ollama run dwightfoster03/functionary-small-v3.1

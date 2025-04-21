@@ -20,7 +20,7 @@ spring:
         options:
 # see https://ollama.com/dwightfoster03/functionary-small-v3.1
           model: dwightfoster03/functionary-small-v3.1
-      base-url: https://366c-34-139-106-36.ngrok-free.app
+      base-url: https://221a-34-83-45-20.ngrok-free.app
 
 logging:
   level:

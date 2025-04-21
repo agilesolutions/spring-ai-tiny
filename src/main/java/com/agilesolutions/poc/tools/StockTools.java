@@ -11,6 +11,7 @@ import org.springframework.ai.tool.annotation.ToolParam;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
@@ -20,34 +21,48 @@ import java.util.List;
 @Slf4j
 public class StockTools {
 
+
+    private final RestTemplate restTemplate;
+
     @Qualifier("twelveDataClient")
     private final WebClient webClient;
 
-    @Value("${STOCK_API_KEY:DEMO}")
+    @Value("${STOCK_API_KEY:demo}")
     private String apiKey;
+
+
+
+    @Tool(description = "Latest stock prices")
+    public StockResponse getLatestStockPricesWithTemplate(@ToolParam(description = "Name of company") String company) {
+        log.info("Get stock prices for: {}", company);
+        StockData data = restTemplate.getForObject("https://api.twelvedata.com/time_series?symbol={0}&interval=1min&outputsize=1&apikey={1}",
+                StockData.class,
+                company,
+                apiKey);
+        DailyStockData latestData = data.getValues().get(0);
+        log.info("Get stock prices ({}) -> {}", company, latestData.getClose());
+        return new StockResponse(Float.parseFloat(latestData.getClose()));
+    }
 
     /**
      * https://api.twelvedata.com/time_series?symbol=AAPL&interval=1day&outputsize=4&apikey=demo&source=docs
+     * https://api.twelvedata.com/time_series?symbol=AAPL&interval=1min&apikey=demo&source=docs
      * @param company
      * @return
      */
-    @Tool(description = "Latest stock prices")
+    //@Tool(description = "Latest stock prices")
     public StockResponse getLatestStockPrices(@ToolParam(description = "Name of company") String company) {
         log.info("Get stock prices for: {}", company);
 
         DailyStockData latestData =  webClient
                 .get()
-                //https://api.twelvedata.com/time_series?symbol=AAPL&interval=1min&apikey=demo&source=docs
                 .uri(builder -> builder.path("/time_series")
                         .queryParam("symbol",company)
                         .queryParam("interval","1min")
-                        .queryParam("outputsize",1)
                         .queryParam("apikey",apiKey).build())
-                .headers(h -> h.setBearerAuth(apiKey))
                 .retrieve()
                 .bodyToFlux(DailyStockData.class)
                 .onErrorResume( e -> {
-                    // Fallback logic in case of an error
                     log.error("Error occurred: {}", e.getMessage());
                     return null;
                 })
@@ -58,7 +73,23 @@ public class StockTools {
         return new StockResponse(Float.parseFloat(latestData.getClose()));
     }
 
+
     @Tool(description = "Historical daily stock prices")
+    public List<DailyShareQuote> getHistoricalStockPricesWithTemplate(@ToolParam(description = "Search period in days") int days,
+                                                          @ToolParam(description = "Name of company") String company) {
+        log.info("Get historical stock prices: {} for {} days", company, days);
+        StockData data = restTemplate.getForObject("https://api.twelvedata.com/time_series?symbol={0}&interval=1day&outputsize={1}&apikey={2}",
+                StockData.class,
+                company,
+                days,
+                apiKey);
+        return data.getValues().stream()
+                .map(d -> new DailyShareQuote(company, Float.parseFloat(d.getClose()), d.getDatetime()))
+                .toList();
+    }
+
+
+    //@Tool(description = "Historical daily stock prices")
     public List<DailyShareQuote> getHistoricalStockPrices(@ToolParam(description = "Search period in days") int days,
                                                           @ToolParam(description = "Name of company") String company) {
         log.info("Get historical stock prices: {} for {} days", company, days);
