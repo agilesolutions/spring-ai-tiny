@@ -17,10 +17,20 @@ public class AgentController {
 
     private final AgentService agentService;
 
-    @GetMapping("/with-tools")
-    public ResponseEntity<String> calculateWalletValueWithTools() {
 
-        ResponseEntity<String> response = ResponseEntity.ok(agentService.calculateWalletValueWithTools());
+    @GetMapping("/wallet")
+    public ResponseEntity<String> getSharesInWallet() {
+
+        ResponseEntity<String> response = ResponseEntity.ok(agentService.getSharesInWallet());
+
+        return response;
+    }
+
+
+    @GetMapping("/with-tools")
+    public ResponseEntity<String> calculateWallet() {
+
+        ResponseEntity<String> response = ResponseEntity.ok(agentService.calculateWalletValue());
 
         return response;
     }

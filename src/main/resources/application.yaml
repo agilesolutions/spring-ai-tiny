@@ -19,8 +19,8 @@ spring:
       chat:
         options:
 # see https://ollama.com/dwightfoster03/functionary-small-v3.1
-          model: dwightfoster03/functionary-small-v3.1
-      base-url: https://221a-34-83-45-20.ngrok-free.app
+          model: smollm2
+      base-url: https://aef5-35-186-176-172.ngrok-free.app
 
 logging:
   level:

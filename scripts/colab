@@ -30,4 +30,4 @@ NGROK_PORT = '11434'
 ngrok_tunnel = setup_ngrok_tunnel(NGROK_PORT)
 
 # run SLM model
-!ollama run dwightfoster03/functionary-small-v3.1
+!ollama run smollm2
