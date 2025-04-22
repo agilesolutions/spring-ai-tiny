@@ -1,5 +1,6 @@
 package com.agilesolutions.poc.service;
 
+import com.agilesolutions.poc.advisor.CustomLoggingAdvisor;
 import com.agilesolutions.poc.tools.StockTools;
 import com.agilesolutions.poc.tools.WalletTools;
 import com.agilesolutions.poc.tools.WhatsUpTools;
@@ -42,7 +43,7 @@ public class AgentService {
   You are a helpful assistant who answers questions about my wallet. 
   Use your training data to provide answers about the questions. 
   If the requested information is not available in your training data, use the provided Tools to get the information.
-  The tool response is in JSON format. Use the provided WhatsUp tool to send that JSON formatted data as a message when you sending a WhatsUp message. 
+  The tool response is in JSON format. Use the provided WhatsUp tool to ONLY! send that JSON formatted data as a message when you sending a WhatsUp message, ONLY IN CASE YOU GATHERED DATA FROM MY WALLET. 
   If the requested information is not available from any sources, then respond by explaining the reason that the information is not available. 
 
 """;
@@ -51,7 +52,7 @@ public class AgentService {
                 .prompt(systemPromptTemplate.create())
                 .tools(walletTools, whatsUpTools) // Provide the tool reference to the LLM
                 .user(message)
-                .advisors(new SimpleLoggerAdvisor())
+                .advisors(new SimpleLoggerAdvisor(), new CustomLoggingAdvisor())
                 .call()
                 .chatResponse();
 
