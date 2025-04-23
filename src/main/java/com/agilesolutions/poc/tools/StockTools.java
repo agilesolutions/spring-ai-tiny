@@ -36,8 +36,8 @@ public class StockTools {
      * @param company
      * @return
      */
-    @Tool(description = "Latest stock prices")
-    public StockResponse getLatestStockPricesWithTemplate(@ToolParam(description = "Name of company") String company) {
+    @Tool(description = "get actual stock prices")
+    public StockResponse getLatestStockPrices(@ToolParam(description = "Name of company") String company) {
         log.info("Get stock prices for: {}", company);
         StockData data = restTemplate.getForObject("https://api.twelvedata.com/time_series?symbol={0}&interval=1min&outputsize=1&apikey={1}",
                 StockData.class,
@@ -49,7 +49,7 @@ public class StockTools {
     }
 
     @Tool(description = "Historical daily stock prices")
-    public List<DailyShareQuote> getHistoricalStockPricesWithTemplate(@ToolParam(description = "Search period in days") int days,
+    public List<DailyShareQuote> getHistoricalStockPrices(@ToolParam(description = "Search period in days") int days,
                                                           @ToolParam(description = "Name of company") String company) {
         log.info("Get historical stock prices: {} for {} days", company, days);
         StockData data = restTemplate.getForObject("https://api.twelvedata.com/time_series?symbol={0}&interval=1day&outputsize={1}&apikey={2}",

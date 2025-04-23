@@ -30,7 +30,7 @@ class StockToolsTest {
     @Test
     public void givenAvailable_whenRetrieving_thenReturnStocks() throws JsonProcessingException {
 
-        StockResponse response = stockTools.getLatestStockPricesWithTemplate("AAPL");
+        StockResponse response = stockTools.getLatestStockPrices("AAPL");
 
         assertAll("verify result",
                 () -> assertTrue(response.price() > 0)
@@ -42,7 +42,7 @@ class StockToolsTest {
     @Test
     public void givenAvailable_whenRetrieving_thenReturnStockss() throws JsonProcessingException {
 
-        List<DailyShareQuote>  dailyShareQuotes = stockTools.getHistoricalStockPricesWithTemplate(5,"AAPL");
+        List<DailyShareQuote>  dailyShareQuotes = stockTools.getHistoricalStockPrices(5,"AAPL");
 
         assertAll("verify result",
                 () -> assertTrue(dailyShareQuotes.size() > 0)

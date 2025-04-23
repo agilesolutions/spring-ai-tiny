@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.tool.annotation.Tool;
-import org.springframework.ai.tool.annotation.ToolParam;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,13 +21,18 @@ public class WalletTools {
 
     private final ObjectMapper objectMapper;
 
-    @Tool(description = "fetch company name and quantity for all shares in my wallet", returnDirect = false)
-    public String getAllShares() {
+    @Tool(description = "Number of shares for each company in my wallet")
+    public List<Share> getNumberOfShares() {
+        return (List<Share>) walletRepository.findAll();
+    }
+
+    //@Tool(description = "Number of shares for each company in my wallet", returnDirect = false)
+    public String getShares() {
         String jsonShares = null;
 
         List<Share>  shares =  (List<Share>) walletRepository.findAll();
 
-        log.info("all share {}", shares.stream().map(s -> s.getCompany()).collect(Collectors.joining(";")));
+        log.info("all shares {}", shares.stream().map(s -> s.getCompany()).collect(Collectors.joining(";")));
 
         try {
             jsonShares =  objectMapper.writeValueAsString(shares);
@@ -40,5 +44,6 @@ public class WalletTools {
         return jsonShares;
 
     }
+
 
 }

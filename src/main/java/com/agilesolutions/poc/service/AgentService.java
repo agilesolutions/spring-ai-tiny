@@ -61,14 +61,31 @@ public class AgentService {
     }
 
     public String calculateWalletValue() {
-        PromptTemplate pt = new PromptTemplate("""
+        //What’s the current value in dollars of my wallet based on the latest stock daily prices ?
+        String message = """
         What’s the current value in dollars of my wallet based on the latest stock daily prices ?
-        """);
+        """;
 
-        return this.chatClient.prompt(pt.create())
-                .tools(stockTools, walletTools)
+
+        String systemMessage = """
+  You are a helpful assistant who answers questions about actual stock prices for shares. 
+  Use your training data to provide answers about the questions. 
+  If the requested information is not available in your training data, use the provided Tools to get the information.
+  Use the company name from share to get the actual stock price for shares. 
+  If the requested information is not available from any sources, then respond by explaining the reason that the information is not available. 
+
+""";
+        SystemPromptTemplate systemPromptTemplate = new SystemPromptTemplate(systemMessage);
+        ChatResponse chatResponse = ChatClient.builder(chatModel).build()
+                .prompt(systemPromptTemplate.create())
+                .tools(walletTools, stockTools, whatsUpTools) // Provide the tool reference to the LLM
+                .user(message)
+                .advisors(new SimpleLoggerAdvisor(), new CustomLoggingAdvisor())
                 .call()
-                .content();
+                .chatResponse();
+
+        return "Response: " + chatResponse.getResult().getOutput().getText();
+
     }
 
     public String calculateHighestWalletValue(@PathVariable int days) {

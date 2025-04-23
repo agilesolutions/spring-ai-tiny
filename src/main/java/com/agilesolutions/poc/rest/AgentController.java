@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("agent")
+@RequestMapping("stock")
 public class AgentController {
 
     private final AgentService agentService;
@@ -27,7 +27,7 @@ public class AgentController {
     }
 
 
-    @GetMapping("/with-tools")
+    @GetMapping("/daily")
     public ResponseEntity<String> calculateWallet() {
 
         ResponseEntity<String> response = ResponseEntity.ok(agentService.calculateWalletValue());
